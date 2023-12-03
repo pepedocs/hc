@@ -1,30 +1,20 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
+	"log"
 	"os"
 
-	"github.com/golang/glog"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	pkgInt "github.com/hc/internal"
 )
 
 var cfgFile string
-var config *pkgInt.HcConfig
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "hc",
-	Short: "Hybrid cloud container",
-	Long: `A CLI locally provisioning a container which provides a management 
+	Short: "Hybric cloud containerized environment",
+	Long: `A CLI for locally provisioning a container that provides a management 
 	environment for managing an OpenShift-based hybrid cloud.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 func Execute() {
@@ -37,14 +27,12 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hc.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func initConfig() {
 	if cfgFile != "" {
+		log.Printf("Using config file: %s\n", cfgFile)
 		viper.SetConfigFile(cfgFile)
 	} else {
 		var src string
@@ -55,9 +43,10 @@ func initConfig() {
 			src = home
 			cobra.CheckErr(err)
 		}
+		log.Printf("Using config file: %s/.hc.yaml\n", src)
 		viper.AddConfigPath(src)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".ocm-workspace")
+		viper.SetConfigName(".hc")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
@@ -65,8 +54,6 @@ func initConfig() {
 	// If a config file is found, read it in.
 	err := viper.ReadInConfig()
 	if err != nil {
-		glog.Fatal("Failed to read config file: ", err)
+		log.Fatal("Failed to read config file: ", err)
 	}
-
-	config = pkgInt.NewHcConfig()
 }

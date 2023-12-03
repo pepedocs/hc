@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/spf13/viper"
@@ -26,14 +27,14 @@ type HcConfig struct {
 	UserHome              string    `mapstructure:"userHome"`
 	BackplaneConfigProd   string    `mapstructure:"backplaneConfigProd"`
 	BackplaneConfigStage  string    `mapstructure:"backplaneConfigStage"`
-	BaseImage             string    `mapstructure:"baseImage"`
+	BaseImageVersion      string    `mapstructure:"baseImageVersion"`
 	OCMCLIVersion         string    `mapstructure:"ocmCLIVersion"`
 	BackplaneCLIVersion   string    `mapstructure:"backplaneCLIVersion"`
 	CustomPortMaps        []PortMap `mapstructure:"customPortMaps"`
 	OcmLongLivedTokenPath string    `mapstructure:"ocmLongLivedTokenPath"`
 }
 
-func NewHcConfig() *HcConfig {
+func GetHcConfig() *HcConfig {
 	var conf HcConfig
 	err := viper.Unmarshal(&conf)
 	if err != nil {
@@ -75,7 +76,7 @@ func (c *HcConfig) GetBackplaneConfigStage() string {
 }
 
 func (c *HcConfig) GetBaseImage() string {
-	return c.BaseImage
+	return fmt.Sprintf("fedora:%s", c.BaseImageVersion)
 }
 
 func (c *HcConfig) GetOcmCLIVersion() string {

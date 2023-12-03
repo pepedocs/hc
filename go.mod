@@ -3,13 +3,15 @@ module hc
 go 1.20
 
 require (
-	github.com/golang/glog v1.2.0
+	github.com/go-cmd/cmd v1.4.2
+	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0
 )
 
 require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
