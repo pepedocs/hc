@@ -16,12 +16,18 @@ func NewCeFactory(args map[string]interface{}) *ceFactory {
 }
 
 type containerEngine interface {
-	// Append env var to current env var list
+	// Append run arg - environment variables
 	AppendEnvVar(key string, value string)
-	// Append build arg to current build arg list
+	// Append build arg - container build arg
 	AppendBuildArg(name string, value string)
+	// Append run arg - host/container volume map
+	AppendVolMap(hostVol string, containerVol string, mapAttrs string)
+	// Append run arg - host/container port/address
+	AppendPortMap(hostPort string, containerPort string, hostAddr string)
 	// Constructs and returns a build image command
-	GetBuildCmd(buildSha string) []string
+	GetBuildCmd() []string
+	// Constructs and returns a run container command
+	GetRunCmd(containerName string, entryPoint string, image string, entryPointArgs ...string) []string
 	// Returns ce executable name (e.g. podman)
 	GetExecName() string
 	// Todo: Add func here as necessary
@@ -127,7 +133,7 @@ func (p *podman) ToBuildArgs() []string {
 	return args
 }
 
-func (p *podman) GetRunArgs(containerName string, entryPoint string, image string, entryPointArgs ...string) []string {
+func (p *podman) GetRunCmd(containerName string, entryPoint string, image string, entryPointArgs ...string) []string {
 
 	runCmd := []string{
 		"run",
@@ -165,11 +171,11 @@ func (p *podman) GetPortMaps() [][]string {
 	return p.portMaps
 }
 
-func (p *podman) GetBuildCmd(buildSha string) []string {
+func (p *podman) GetBuildCmd() []string {
 	buildCmd := []string{
 		"build",
 		"-t",
-		fmt.Sprintf("hc:%s", buildSha[:6]),
+		"hc:latest",
 	}
 	buildCmd = append(buildCmd, p.ToBuildArgs()...)
 	buildCmd = append(buildCmd, ".")

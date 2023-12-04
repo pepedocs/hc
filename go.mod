@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/go-cmd/cmd v1.4.2
+	github.com/google/uuid v1.1.2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0

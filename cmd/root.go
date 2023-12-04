@@ -1,11 +1,14 @@
 package cmd
 
 import (
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	pkgInt "hc/internal"
 )
 
 var cfgFile string
@@ -26,13 +29,13 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	rootCmd.PersistentFlags().BoolVarP(&pkgInt.Debug, "debug", "d", false, "verbose logging")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hc.yaml)")
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func initConfig() {
 	if cfgFile != "" {
-		log.Printf("Using config file: %s\n", cfgFile)
 		viper.SetConfigFile(cfgFile)
 	} else {
 		var src string
@@ -43,7 +46,6 @@ func initConfig() {
 			src = home
 			cobra.CheckErr(err)
 		}
-		log.Printf("Using config file: %s/.hc.yaml\n", src)
 		viper.AddConfigPath(src)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".hc")
@@ -56,4 +58,11 @@ func initConfig() {
 	if err != nil {
 		log.Fatal("Failed to read config file: ", err)
 	}
+
+	if err = pkgInt.ValidateConfig(); err != nil {
+		log.Fatalf("Invalid config: %s", err)
+	}
+
+	// Todo: Handle os signals
+
 }

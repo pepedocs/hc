@@ -3,7 +3,8 @@ package cmd
 import (
 	pkgInt "hc/internal"
 	pkgIntHelper "hc/internal/helpers"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/spf13/cobra"
 )
@@ -38,7 +39,7 @@ var buildCmd = &cobra.Command{
 		headSha := string(out)
 		ce.AppendBuildArg("BUILD_SHA", headSha)
 
-		ceBuildCmd := ce.GetBuildCmd(headSha)
+		ceBuildCmd := ce.GetBuildCmd()
 		pkgIntHelper.RunCommandStreamOutput(ce.GetExecName(), ceBuildCmd...)
 	},
 }

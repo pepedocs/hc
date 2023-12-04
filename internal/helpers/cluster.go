@@ -81,15 +81,26 @@ func OcGetConfig(runAsOcUser string) (*OcConfig, error) {
 	return &config, nil
 }
 
-func OcmGetOCMToken() (string, error) {
-	out, err := exec.Command("ocm", "token").Output()
+func OcmGetOCMToken(
+	ocmEnv string,
+	ocmCliProd string,
+	ocmCliStage string,
+) (string, error) {
 	var ocmToken string
-
-	if err == nil {
-		ocmToken = string(out[:])
-		if len(ocmToken) < 2000 {
-			err = fmt.Errorf(ocmToken)
-		}
+	var err error
+	var out []byte
+	if ocmEnv == "production" && len(ocmCliProd) > 0 {
+		out, err = exec.Command("sh", ocmCliProd, "token").CombinedOutput()
+	} else if ocmEnv == "staging" && len(ocmCliStage) > 0 {
+		out, err = exec.Command("sh", ocmCliStage, "token").CombinedOutput()
+	} else {
+		out, err = exec.Command("ocm", "token").CombinedOutput()
 	}
+
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", out, err)
+	}
+
+	ocmToken = string(out)
 	return ocmToken, err
 }
