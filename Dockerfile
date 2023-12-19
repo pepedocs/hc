@@ -32,6 +32,7 @@ ENV BUILD_SHA=${BUILD_SHA}
 
 RUN mkdir -p /hc
 WORKDIR /hc
+ADD ./terminal ./terminal
 ADD ./hc .
 RUN chmod +x ./hc && cp ./hc /usr/bin/hc
 

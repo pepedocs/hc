@@ -38,13 +38,13 @@ func RunCommandBackground(
 }
 
 func RunCommandOutput(cmdName string, cmdArgs ...string) ([]byte, error) {
-	// log.Printf("Running command: %s %s\n", cmdName, cmdArgs)
+	logger.Debugf("Running command: %s %s\n", cmdName, cmdArgs)
 	cmd := exec.Command(cmdName, cmdArgs...)
 	return cmd.Output()
 }
 
 func RunCommandPipeStdin(cmdName string, cmdArgs ...string) ([]byte, error) {
-	// log.Printf("Running command: %s %s\n", cmdName, cmdArgs)
+	logger.Debugf("Running command: %s %s\n", cmdName, cmdArgs)
 	cmd := exec.Command(cmdName, cmdArgs...)
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
@@ -84,7 +84,7 @@ func RunCommandListStreamOutput(commandList [][]string) []error {
 // Runs a blocking command (go-cmd) and streams its output.
 // https://github.com/go-cmd/cmd/blob/master/examples/blocking-streaming/main.go
 func RunCommandStreamOutput(cmdName string, args ...string) gocmd.Status {
-	// log.Printf("Running command: %s %s\n", cmdName, args)
+	logger.Debugf("Running command: %s %s\n", cmdName, args)
 
 	cmdOptions := gocmd.Options{
 		Buffered:  false,

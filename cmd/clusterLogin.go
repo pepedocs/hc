@@ -162,9 +162,9 @@ func OCMBackplaneLogin() {
 
 func runTerminal() {
 	// Run terminal
-	status := pkgIntHelper.RunCommandStreamOutput("cp", "/terminal/bashrc", hcCon.UserBashrcPath)
+	status := pkgIntHelper.RunCommandStreamOutput("cp", "/hc/terminal/bashrc", hcCon.UserBashrcPath)
 	if status.Exit != 0 {
-		logger.Fatalf("Failed to copy /terminal/bashrc: %v", status.Error)
+		logger.Fatalf("Failed to copy /hc/terminal/bashrc: %v", status.Error)
 	}
 
 	file, err := os.OpenFile(hcCon.UserBashrcPath, os.O_APPEND|os.O_WRONLY, 0644)

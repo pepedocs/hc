@@ -106,7 +106,6 @@ func login(cmd *cobra.Command, args []string) {
 			"ro",
 		)
 	}
-	ce.AppendVolMap("./terminal", "/terminal", "ro")
 	ce.AppendVolMap(fmt.Sprintf("%s/.hc.yaml", config.UserHome), hcConfigPath, "ro")
 
 	for _, dirMap := range config.CustomDirMaps {
