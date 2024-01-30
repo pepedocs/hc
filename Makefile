@@ -5,7 +5,7 @@ build-cli:
 
 PHONY: install-cli
 install-cli: build-cli
-	sudo cp ./hc /usr/local/bin/hc && sudo chmod +x /usr/local/bin/hc
+	sudo ln -sf ${PWD}/hc /usr/local/bin/hc
 
 
 PHONY: build-image
