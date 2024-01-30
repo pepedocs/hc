@@ -6,6 +6,7 @@ import (
 	pkgIntHelper "hc/internal/helpers"
 	"os"
 	"strconv"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -15,9 +16,10 @@ import (
 
 var (
 	loginCmdArgs struct {
-		cluster        string
-		ocmEnvironment string
-		isOcmLoginOnly bool
+		cluster                string
+		ocmEnvironment         string
+		isOcmLoginOnly         bool
+		extraContainerPortMaps string
 	}
 )
 
@@ -116,6 +118,17 @@ func login(cmd *cobra.Command, args []string) {
 	// Openshift console port
 	ce.AppendPortMap(openshiftConsolePort, openshiftConsolePort, "127.0.0.1")
 
+	// Append extra ports if there's any
+	extraContainerPorts := strings.Fields(loginCmdArgs.extraContainerPortMaps)
+	extraHostPorts, err := pkgIntHelper.GetFreePorts(len(extraContainerPorts))
+	if err != nil {
+		log.Fatal("Failed to generate and map extra container ports: ", err)
+	}
+	for idx, containerPort := range extraContainerPorts {
+		port := strconv.Itoa(extraHostPorts[idx])
+		ce.AppendPortMap(port, containerPort, "127.0.0.1")
+	}
+
 	suffix := uuid.New()
 	containerName := fmt.Sprintf("hc-%s-%s", ocmCluster, suffix.String()[:6])
 
@@ -170,5 +183,13 @@ func init() {
 		"isOcmLoginOnly",
 		false,
 		"Log in to OCM only.",
+	)
+
+	flags.StringVarP(
+		&loginCmdArgs.extraContainerPortMaps,
+		"extraContainerPortMaps",
+		"p",
+		"",
+		"Extra host to container port maps",
 	)
 }
