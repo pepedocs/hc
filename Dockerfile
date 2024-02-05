@@ -25,7 +25,9 @@ RUN dnf update -y && \
     wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz && \
     tar -xvf openshift-client-linux.tar.gz && \
     mv $PWD/oc /usr/bin/oc && \
-    mv $PWD/kubectl /usr/bin/kubectl
+    mv $PWD/kubectl /usr/bin/kubectl && \
+    curl -L https://raw.githubusercontent.com/mt-sre/ocm-addons/main/scripts/install.sh | bash && \
+    mv $PWD/ocm-addons /usr/bin/
 
 ARG BUILD_SHA=
 ENV BUILD_SHA=${BUILD_SHA}
